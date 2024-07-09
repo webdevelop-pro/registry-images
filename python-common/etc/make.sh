@@ -92,7 +92,7 @@ self-update)
   ;;
 
 run-dev)
-  nodemon -u -w app -e py --exec python app/__main__.py
+  nodemon -u -w app -e py --exec python -m app
   ;;
 
 run)
