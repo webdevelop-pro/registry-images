@@ -11,7 +11,7 @@ LABEL BUILD_DATE=$BUILD_DATE
 LABEL SERVICE_NAME=$SERVICE_NAME
 LABEL REPOSITORY=$REPOSITORY
 
-ENV GOPATH=/usr/local/go
+ENV GOPATH=/app
 ENV VERSION=${VERSION:-unknown}
 
 RUN apk add --no-cache make gcc musl-dev linux-headers git gettext ca-certificates
