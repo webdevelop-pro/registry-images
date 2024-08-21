@@ -1,16 +1,18 @@
-module github.com/webdevelop-pro/gcp
+module github.com/webdevelop-pro/go-common
 
-go 1.22
+go 1.22.1
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/davecgh/go-spew v1.1.1
 	github.com/jackc/pgtype v1.14.2
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/pkg/errors v0.9.1
-	github.com/webdevelop-pro/go-common v0.0.0-20240517181101-5ea5457c324d
-	github.com/webdevelop-pro/go-logger v0.0.0-20240430152732-8643c4e115d8
-	go.uber.org/fx v1.21.1
+	github.com/stretchr/testify v1.9.0
+	github.com/webdevelop-pro/go-common v0.0.0-20240416190735-14ed9c9cc479
+	github.com/webdevelop-pro/go-logger v0.0.0-20240114181856-5dd3039ec7f0
+	go.uber.org/fx v1.21.0
 )
 
 require (
@@ -22,7 +24,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
@@ -56,7 +57,6 @@ require (
 	github.com/prometheus/common v0.51.1 // indirect
 	github.com/prometheus/procfs v0.13.0 // indirect
 	github.com/rs/zerolog v1.32.0 // indirect
-	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.opencensus.io v0.24.0 // indirect

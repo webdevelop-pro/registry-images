@@ -16,7 +16,11 @@ lstrip() {
     printf '%s\n' "${1##$2}"
 }
 
+# change directory to the app
+# usefull if we run script from different directory
 WORK_DIR=$(pwd)
+cd $WORK_DIR
+
 # if company name not set - try to get it from the path$
 if [ -z "${COMPANY_NAME}" ]; then
   COMPANY_NAME=$(lstrip $(basename `cd ..; pwd`) "pro")
@@ -63,7 +67,7 @@ install)
   curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
   go install github.com/go-swagger/go-swagger/cmd/swagger@latest
   go install github.com/securego/gosec/v2/cmd/gosec@latest
-  go install github.com/cosmtrek/air@latest
+  go install github.com/air-verse/air@latest
   go install github.com/daixiang0/gci@latest
 
   echo "set up pre-commit hook and make.sh file"
