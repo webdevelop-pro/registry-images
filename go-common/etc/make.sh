@@ -64,7 +64,7 @@ case $1 in
 
 install)
   echo "golang global dependencies"
-  curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
+  curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
   go install github.com/go-swagger/go-swagger/cmd/swagger@latest
   go install github.com/securego/gosec/v2/cmd/gosec@latest
   go install github.com/air-verse/air@latest
@@ -81,7 +81,7 @@ install)
   ;;
 
 lint)
-  golangci-lint -c .golangci.yml run $2 $3
+  golangci-lint -c .golangci.yml run  ./... $2 $3
   ;;
 
 test)
