@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+u!/usr/bin/env sh
 set -xe
 
 # system functions
@@ -86,14 +86,14 @@ lint)
 
 test)
   case $2 in
-  unit)
+  http)
     init
-    go test -run=Unit -count=1 -v ${PKG_LIST} $3
+    go test -run=TestHTTP -count=1 -v ${PKG_LIST} $3
     ;;
 
-  integration)
+  worker)
     init
-    go test -run=Integration -count=1 -p 1 -v ${PKG_LIST} $3
+    go test -run=Worker -count=1 -p 1 -v ${PKG_LIST} $3
     ;;
   *)
       init
@@ -116,6 +116,14 @@ self-update)
 run-dev)
   # make sure you have proper .air.toml
   air
+  ;;
+
+pubsub-dev)
+  if [ ! -x "$(command -v gcloud)" ]; then
+      echo "gcloud sdk not installed!!!"
+      echo "Please install https://cloud.google.com/sdk/docs/install"
+  fi
+  gcloud beta emulators pubsub start --project=webdevelop-live
   ;;
 
 memory)

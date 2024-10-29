@@ -1,4 +1,4 @@
-FROM golang:1.23.0-alpine3.20@sha256:d0b31558e6b3e4cc59f6011d79905835108c919143ebecc58f35965bf79948f4
+FROM docker.io/golang:1.23.2-alpine3.20@sha256:9dd2625a1ff2859b8d8b01d8f7822c0f528942fe56cfe7a1e7c38d3b8d72d679
 
 ARG GIT_COMMIT=unspecified
 ARG BUILD_DATE=unspecified
@@ -14,7 +14,7 @@ LABEL REPOSITORY=$REPOSITORY
 ENV GOPATH=/go
 ENV VERSION=${VERSION:-unknown}
 
-RUN apk add --no-cache make gcc musl-dev linux-headers git gettext ca-certificates
+RUN apk add --no-cache make gcc musl-dev linux-headers git gettext ca-certificates curl
 
 ADD . /app
 
@@ -22,6 +22,9 @@ WORKDIR /app
 
 # Install swagger library
 RUN go install github.com/go-swagger/go-swagger/cmd/swagger@latest
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
+RUN go install github.com/securego/gosec/v2/cmd/gosec@latest
+RUN go install github.com/daixiang0/gci@latest
 RUN ./build-deploy.sh download
 RUN ln -s /usr/local/go/bin/go /usr/local/bin/go
 

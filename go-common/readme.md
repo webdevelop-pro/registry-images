@@ -1,6 +1,6 @@
 # Go lang common image
 
-Pre-build docker image for go 1.21.5
+Pre-build docker image for go 1.23.0
 - Improve docker build up for 10x times
 - Make sure base image is secure with snyk vulnerability scanner
 - Universal make.sh file to help have similar pipelines on different go based repos
@@ -33,4 +33,4 @@ RUN ./make.sh build
 # ToDo
 - [ ] `./make.sh coverage` to generate badger for test coverage
 - [ ] `./make.sh run-debug-dev` add ability to run in debug mode
-
+- [ ] create go image with pubsub and without pubsub (pubsub takes about 1G of space)
