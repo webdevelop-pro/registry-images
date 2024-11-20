@@ -1,4 +1,4 @@
-u!/usr/bin/env sh
+#!/usr/bin/env sh
 set -xe
 
 # system functions
@@ -16,8 +16,6 @@ lstrip() {
     printf '%s\n' "${1##$2}"
 }
 
-# change directory to the app
-# usefull if we run script from different directory
 WORK_DIR=$(pwd)
 cd $WORK_DIR
 
@@ -28,8 +26,17 @@ else
   COMPANY_NAME="${COMPANY_NAME}"
 fi
 
-SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
-REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
+if [ -z "${SERVICE_NAME}" ]; then
+  SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
+else
+  SERVICE_NAME="${SERVICE_NAME}"
+fi
+
+if [ -z "${REPOSITORY}" ]; then
+  REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
+else
+  REPOSITORY="${REPOSITORY}"
+fi
 
 init() {
   GO_FILES=$(find . -name '*.go' | grep -v _test.go)
@@ -37,7 +44,9 @@ init() {
 }
 
 build() {
-  GIT_COMMIT=$(git rev-parse --short HEAD)
+  if [ -z "${COMPANY_NAME}" ]; then
+    GIT_COMMIT=$(git rev-parse --short HEAD)
+  fi
   BUILD_DATE=$(date "+%Y%m%d")
 
   for file in cmd/*; do
@@ -67,7 +76,7 @@ install)
   curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
   go install github.com/go-swagger/go-swagger/cmd/swagger@latest
   go install github.com/securego/gosec/v2/cmd/gosec@latest
-  go install github.com/air-verse/air@latest
+  go install github.com/cosmtrek/air@latest
   go install github.com/daixiang0/gci@latest
 
   echo "set up pre-commit hook and make.sh file"
@@ -81,14 +90,22 @@ install)
   ;;
 
 lint)
-  golangci-lint -c .golangci.yml run  ./... $2 $3
+  golangci-lint -c .golangci.yml run ./... $2 $3
   ;;
+
+pubsub-dev)
+  if [ ! -x "$(command -v gcloud)" ]; then
+      echo "gcloud sdk not installed!!!"
+      echo "Please install https://cloud.google.com/sdk/docs/install"
+  fi
+  gcloud beta emulators pubsub start --project=$PUBSUB_PROJECT_ID
+  ;;  
 
 test)
   case $2 in
   http)
     init
-    go test -run=TestHTTP -count=1 -v ${PKG_LIST} $3
+    go test -run=HTTP -count=1 -v ${PKG_LIST} $3
     ;;
 
   worker)
@@ -116,14 +133,6 @@ self-update)
 run-dev)
   # make sure you have proper .air.toml
   air
-  ;;
-
-pubsub-dev)
-  if [ ! -x "$(command -v gcloud)" ]; then
-      echo "gcloud sdk not installed!!!"
-      echo "Please install https://cloud.google.com/sdk/docs/install"
-  fi
-  gcloud beta emulators pubsub start --project=webdevelop-live
   ;;
 
 memory)
@@ -180,6 +189,23 @@ deploy-dev)
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev
   kubectl -n $COMPANY_NAME-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  ;;
+
+deploy-stage)
+  GIT_COMMIT=$(git rev-parse --short HEAD)
+  BUILD_DATE=$(date "+%Y%m%d")
+  docker build \
+    --build-arg GIT_COMMIT=$GIT_COMMIT --build-arg BUILD_DATE=$BUILD_DATE --build-arg SERVICE_NAME=$SERVICE_NAME --build-arg REPOSITORY=$REPOSITORY \
+    -t cr.webdevelop.pro/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT \
+    -t cr.webdevelop.pro/$COMPANY_NAME/$SERVICE_NAME:latest-stage --platform=linux/amd64 .
+  # snyk container test cr.webdevelop.pro/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  if [ $? -ne 0 ]; then
+    echo "===================="
+    echo "snyk has found a vulnerabilities, please consider choosing alternative image from snyk"
+    echo "===================="
+  fi
+  docker push cr.webdevelop.pro/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  docker push cr.webdevelop.pro/$COMPANY_NAME/$SERVICE_NAME:latest-stage
   ;;
 
 help)
