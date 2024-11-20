@@ -44,7 +44,7 @@ init() {
 }
 
 build() {
-  if [ -z "${COMPANY_NAME}" ]; then
+  if [ -z "${GIT_COMMIT}" ]; then
     GIT_COMMIT=$(git rev-parse --short HEAD)
   fi
   BUILD_DATE=$(date "+%Y%m%d")
