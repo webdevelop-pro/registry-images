@@ -1,4 +1,4 @@
-FROM python:3.12-alpine3.19@sha256:849ed6079c9f797ca9c1b7d6aea1c00aea3ac35110cbd0d6003f15950017ea8d as build
+FROM python:3.12.7-alpine3.20
 ENV PYTHONUNBUFFERED 1
 
 RUN apk add --no-cache --virtual .build-deps \
@@ -11,7 +11,8 @@ RUN update-ca-certificates
 WORKDIR /usr/local/app/
 RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
-RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.6.5.zip
+RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.6.6.zip
+RUN pip install --upgrade pip
 RUN pip install google-cloud-pubsub
 
 # in case if we want to install latest
