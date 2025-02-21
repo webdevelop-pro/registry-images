@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.23.2-alpine3.20@sha256:9dd2625a1ff2859b8d8b01d8f7822c0f528942fe56cfe7a1e7c38d3b8d72d679
+FROM public.ecr.aws/docker/library/golang:1.24.0-alpine3.21
 
 ARG GIT_COMMIT=unspecified
 ARG BUILD_DATE=unspecified
